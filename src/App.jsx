@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import Instructions from "./Instructions";
 
 const displayEmojiNmae = (event) => console.log(event.target.id);
 const emoji = [
@@ -35,6 +36,7 @@ function App() {
 					</li>
 				))}
 			</ul>
+			<Instructions />
 		</div>
 	);
 }
