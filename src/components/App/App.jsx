@@ -1,8 +1,8 @@
 import React from "react";
 import "./App.css";
-import Instructions from "./Instructions";
+import Instructions from "../Instructions/Instructions";
 
-const displayEmojiNmae = (event) => console.log(event.target.id);
+const displayEmojiNmae = (event) => alert(event.target.id);
 const emoji = [
 	{
 		emoji: "😀",
