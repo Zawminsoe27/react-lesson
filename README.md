@@ -1,1 +1,1 @@
-Create custom components in react
+Creating Predictable Props with #PropTypes and #defaultProps
