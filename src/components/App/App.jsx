@@ -1,23 +1,10 @@
 import React from "react";
-import { createUseStyles } from "react-jss";
-import Alert from "../Alert/Alert";
-import CartSuccess from "../CartSuccess/Cartsuccess";
-
-let useStyles = createUseStyles({
-	wrapper: {
-		padding: 20,
-	},
-});
-
+import Product from "../Product/Product";
 function App() {
-	const classes = useStyles();
+	const date = new Date()
+
 	return (
-		<div className={classes.wrapper}>
-			<Alert title="Items Not Added" type="error">
-				<div>Your items are out of stock</div>
-			</Alert>
-			<CartSuccess />
-		</div>
-	);
+		<Product/>
+	)
 }
-export default App;
+export default App
