@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, { useReducer, useState } from "react";
 import "./Product.css";
 
 const products = [
 	{
 		emoji: "🍦",
-		name: "ice-cream",
+		name: "iceCream",
 		price: 5,
 	},
 	{
@@ -18,74 +18,79 @@ const products = [
 		price: 4,
 	},
 ];
-
-class Product extends Component {
-	state = {
-		cart: [],
-	};
-
-	add = (product) => {
-		this.setState((state) => ({
-			cart: [...state.cart, product],
-		}));
-	};
-
-	currencyOptions = {
-		minimumFractionDigits: 2,
-		maximunFractionDigits: 2,
-	};
-	getTotal = () => {
-		const total = this.state.cart.reduce(
-			(totalConst, item) => totalConst + item.price,
-			0
-		);
-		return total.toLocaleString(undefined, this.currencyOptions);
-	};
-	remove = (product) => {
-		this.setState((state) => {
-			const cart = [...state.cart];
-			const productIndex = cart.findIndex((p) => p.name == product.name);
+const currencyOptions = {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2,
+};
+function cartReducer(state, action) {
+	switch (action.type) {
+		case "add":
+			return [...state, action.product];
+		case "remove":
+			const productIndex = state.findIndex(
+				(item) => item.name === action.product.name
+			);
 			if (productIndex < 0) {
-				return;
+				return state;
 			}
-			cart.splice(productIndex, 1);
-			return {
-				cart
-			};
-		});
-	};
-	render() {
-		return (
-			<div className="wrapper">
-				<div>Shopping Cart: {this.state.cart.length} total items</div>
-				<div>Total:{this.getTotal()}</div>
-				<div className="itemListContainer">
-					{products.map((product) => {
-						return (
-							<div
-								key={product.name}
-								className="productItemContainer">
-								<div className="product">
-									<span role="img" aria-label={product.name}>
-										{product.emoji}
-									</span>
-								</div>
-								<button
-									className="btn add"
-									onClick={() => this.add(product)}>
-									Add
-								</button>
-								<button
-									className="btn remove"
-									onClick={() => this.remove(product)}>
-									Remove
-								</button>
-							</div>
-						);
-					})}
-				</div>
-			</div>
-		);
+			const updatedCart = [
+				...state.slice(0, productIndex),
+				...state.slice(productIndex + 1),
+			];
+			return updatedCart;
+		default:
+			return state;
 	}
+}
+
+function totalReducer(state, action) {
+	if (action.type === "add") {
+		return state + action.price;
+	} else {
+		return state - action.price;
+	}
+}
+function getTotal(cart) {
+	const total = cart.reduce((totalCost, item) => totalCost + item.price, 0);
+	return total.toLocaleString(undefined, currencyOptions);
+}
+function Product() {
+	const [cart, setCart] = useReducer(cartReducer, []);
+	const [total, setTotal] = useReducer(totalReducer, 0);
+
+	function add(product) {
+		setCart({ product, type: "add" });
+	}
+	function remove(product) {
+		setCart({ product, type: "remove" });
+	}
+	return (
+		<div className="wrapper">
+			<div>Shopping Cart: {cart.length} total items.</div>
+			<div>Total : {getTotal(cart)}</div>
+
+			<div className="itemListContainer">
+				{products.map((product) => (
+					<div key={product.name} className="productItemContainer">
+						<div className="product">
+							<span role="img" aria-label={product.name}>
+								{product.emoji}
+							</span>
+						</div>
+						<button
+							className="btn add"
+							onClick={() => add(product)}>
+							Add
+						</button>
+						<button
+							className="btn remove"
+							onClick={() => remove(product)}>
+							Remove
+						</button>
+					</div>
+				))}
+			</div>
+		</div>
+	);
 }
 export default Product;
